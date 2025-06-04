@@ -2,9 +2,10 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import socket
 import json
+import ssl
 
-SERVER_HOST = 'local ip'
-SERVER_PORT = 12345
+SERVER_HOST = '172.19.16.1'
+SERVER_PORT = 9999
 
 class BlockchainClientApp:
     def __init__(self, root):
@@ -43,6 +44,22 @@ class BlockchainClientApp:
         self.is_dark_mode = not self.is_dark_mode
         self.set_theme("dark" if self.is_dark_mode else "light")
 
+    def refresh_chain(self):
+        try:
+            context = ssl.create_default_context(cafile="cert.pem")
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_REQUIRED
+
+            with socket.create_connection((SERVER_HOST, SERVER_PORT), timeout=5) as sock:
+                with context.wrap_socket(sock, server_hostname=SERVER_HOST) as s:
+                    s.send(json.dumps({"type": "refresh"}).encode())
+                    response = s.recv(8192).decode()
+                    chain = json.loads(response)
+                    self.display_chain(chain)
+        except Exception as e:
+            messagebox.showerror("Connection Error", f"Could not refresh chain:\n{e}")
+
+
     def build_gui(self):
         self.title_label = ttk.Label(self.root, text="Blockchain Messenger", font=("Segoe UI", 18, "bold"))
         self.title_label.pack(pady=10)
@@ -57,12 +74,16 @@ class BlockchainClientApp:
         ttk.Label(self.input_frame, text="Message:").grid(row=1, column=0, sticky="e", padx=5, pady=5)
         self.message_entry = ttk.Entry(self.input_frame, width=50)
         self.message_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.message_entry.bind("<Return>", lambda event: self.send_message())
 
         self.send_button = ttk.Button(self.input_frame, text="🚀 Send Message", command=self.send_message)
         self.send_button.grid(row=2, column=1, pady=10)
 
         self.theme_button = ttk.Button(self.input_frame, text="🌓 Toggle Dark Mode", command=self.toggle_theme)
         self.theme_button.grid(row=2, column=0, pady=10)
+
+        self.refresh_button = ttk.Button(self.input_frame, text="⟳ Refresh Chain", command=self.refresh_chain)
+        self.refresh_button.grid(row=2, column=2, padx=5, pady=10)
 
         self.output = scrolledtext.ScrolledText(self.root, width=95, height=20, font=("Consolas", 10), borderwidth=1, relief="solid")
         self.output.pack(padx=10, pady=10)
@@ -76,18 +97,24 @@ class BlockchainClientApp:
             return
 
         try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((SERVER_HOST, SERVER_PORT))
-                data = json.dumps({'sender': sender, 'message': message})
-                s.send(data.encode())
-                response = s.recv(8192).decode()
-                chain = json.loads(response)
-                self.display_chain(chain)
+            context = ssl.create_default_context(cafile="cert.pem")
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_REQUIRED
+            with socket.create_connection((SERVER_HOST, SERVER_PORT)) as sock:
+                with context.wrap_socket(sock, server_hostname=SERVER_HOST) as s:
+                    data = json.dumps({'sender': sender, 'message': message})
+                    s.send(data.encode())
+                    response = s.recv(8192).decode()
+                    chain = json.loads(response)
+                    self.display_chain(chain)
+        except FileNotFoundError:
+            messagebox.showerror("Certificate Error", "Trusted certificate (cert.pem) not found.")
         except Exception as e:
             messagebox.showerror("Connection Error", f"Could not reach server:\n{e}")
 
         self.sender_entry.delete(0, tk.END)
         self.message_entry.delete(0, tk.END)
+
 
     def display_chain(self, chain):
         self.output.delete(1.0, tk.END)
