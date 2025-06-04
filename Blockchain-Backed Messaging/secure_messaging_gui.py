@@ -4,7 +4,7 @@ import socket
 import json
 import ssl
 
-SERVER_HOST = '172.19.16.1'
+SERVER_HOST = 'ip address'
 SERVER_PORT = 9999
 
 class BlockchainClientApp:
