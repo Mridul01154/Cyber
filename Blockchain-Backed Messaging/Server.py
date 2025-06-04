@@ -3,7 +3,9 @@ import threading
 import hashlib
 import datetime
 import json
+import ssl
 
+# === Blockchain Definition ===
 class Blockchain:
     def __init__(self):
         self.chain = []
@@ -40,33 +42,46 @@ class Blockchain:
 
 blockchain = Blockchain()
 
+# === Handle Incoming Clients ===
 def handle_client(conn, addr):
     try:
-        print(f"[+] Connected by {addr}")  
-
+        print(f"[+] Connected by {addr}")
         data = conn.recv(1024).decode()
         msg = json.loads(data)
-        print(f"[+] Received message from {msg['sender']}: {msg['message']}")  
-
-        blockchain.add_block(msg['sender'], msg['message'])
-
+        if msg.get("type") == "refresh":
+            print(f"[↻] Refresh request from {addr}")
+        else:
+            print(f"[+] Received message from {msg['sender']}: {msg['message']}")
+            blockchain.add_block(msg['sender'], msg['message'])
         response = json.dumps(blockchain.get_chain())
         conn.send(response.encode())
-
     except Exception as e:
-        print("Error:", e)
+        print("[!] Error handling client:", e)
     finally:
         conn.close()
-        print(f"[-] Connection with {addr} closed")  
-
+        print(f"[-] Connection with {addr} closed")
 
 HOST = '0.0.0.0'
 PORT = 9999
+
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+context.load_cert_chain(certfile="cert.pem", keyfile="key.pem")
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 server.listen()
+print(f"[+] TLS Server started on port {PORT}")
 
-print(f"[+] Server started on port {PORT}")
+
 while True:
-    conn, addr = server.accept()
-    threading.Thread(target=handle_client, args=(conn, addr)).start()
+        try:
+            client_socket, addr = server.accept()
+            secure_conn = context.wrap_socket(client_socket, server_side=True)
+            threading.Thread(target=handle_client, args=(secure_conn, addr)).start()
+        except ssl.SSLError as ssl_error:
+            print(f"[!] SSL error from {addr}: {ssl_error}")
+            client_socket.close()
+        except Exception as e:
+            print("[!] General server error:", e)
+
+
