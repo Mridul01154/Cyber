@@ -14,3 +14,4 @@ A simple, secure, and stylish desktop chat application built with Python, Tkinte
 
 📜 Genesis Block – Automatically created for blockchain initialization.
 
+NOTE: “Generate your own TLS certificate using OpenSSL or generate_cert.py before running the server.”
