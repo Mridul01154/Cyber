@@ -22,7 +22,7 @@ This project is a desktop messenger with the following features:
 
 > Located in the [`docs`](https://github.com/Mridul01154/Cyber/tree/main/Blockchain-Backed%20Messaging/docs) folder of the repo.
 
-![Light Mode](https://github.com/Mridul01154/Cyber/blob/main/Blockchain-Backed%20Messaging/docs/Screenshot%202025-06-04%20143802.png)
+![Light Mode](https://github.com/Mridul01154/Cyber/blob/main/Blockchain-Backed%20Messaging/docs/Screenshot%202025-06-05%20153652.png)
 ![Dark Mode](https://github.com/Mridul01154/Cyber/blob/main/Blockchain-Backed%20Messaging/docs/Screenshot%202025-06-05%20153541.png)
 
 ---
