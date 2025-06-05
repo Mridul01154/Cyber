@@ -5,7 +5,6 @@ import datetime
 import json
 import ssl
 
-# === Blockchain Definition ===
 class Blockchain:
     def __init__(self):
         self.chain = []
@@ -42,7 +41,6 @@ class Blockchain:
 
 blockchain = Blockchain()
 
-# === Handle Incoming Clients ===
 def handle_client(conn, addr):
     try:
         print(f"[+] Connected by {addr}")
