@@ -1,36 +1,29 @@
-Disclaimer: This project is strictly for educational and ethical purposes. Do not use this code to invade privacy, violate laws, or breach terms of service.
+# Windows Keylogger (Educational Purpose Only)
 
-This is a basic Windows-based keylogger implemented in C, demonstrating how low-level keyboard input can be captured using the WinAPI. The program logs keystrokes, formats them with timestamps, and writes them to a disguised log file. It also hides its console window and attempts to persist by copying itself to the system's temp directory.
+> ⚠️ **Disclaimer**: This software is intended **solely for educational and ethical penetration testing** purposes. Unauthorized use to spy on individuals or systems without consent may be **illegal**. The author is not responsible for any misuse of this code.
 
-⚙️ Features
-Captures printable characters, control keys (e.g., Enter, Shift, Backspace)
+## Overview
 
-Timestamps each logged keystroke
+This is a simple Windows-based keylogger written in C that:
+- Hides its console window upon execution
+- Copies itself to the system's temporary directory as `sysupdate.exe`
+- Runs in the background, logging keystrokes to `system.log`
+- Terminates if the `ESC` key is pressed
 
-Detects and logs key combinations (e.g., Shift + letter, Caps Lock behavior)
+## Features
 
-Hides the console window on startup
+- Logs both alphanumeric and special keys
+- Records keystrokes with timestamps
+- Runs silently in the background
+- Supports uppercase/lowercase detection using Shift and Caps Lock
+- Saves logs to a file named `system.log`
 
-Moves and relaunches itself from the %TEMP% directory as sysupdate.exe
+## How It Works
 
-Stores logs in a local file named system.log
+1. **Console Hiding**: The `hideConsole()` function uses WinAPI to hide the running console.
+2. **Self-Copying**: The `moveToTempDir()` function copies the binary to the system temp directory and re-runs itself under the new name.
+3. **Key Logging**: A new thread is created to capture keystrokes using `GetAsyncKeyState`.
+4. **Log Format**: Each keystroke is logged with a timestamp and saved to `system.log`.
 
-Gracefully exits when the ESC key is pressed
+## File Structure
 
-📁 How It Works
-The program hides the console using ShowWindow(hwnd, SW_HIDE).
-
-It copies itself to the Windows Temp directory with a disguised name (sysupdate.exe).
-
-It spawns a new thread to continuously listen for keypresses using GetAsyncKeyState.
-
-Keystrokes are logged to a file named system.log with time-based formatting.
-
-⚠️ Warning
-This software can be misused. Running this without proper consent is illegal and unethical. Please ensure:
-
-You have explicit permission to run this on any machine.
-
-It is used only in controlled, authorized, or educational environments (e.g., labs, security research).
-
-You understand and respect applicable local laws and terms of use.
