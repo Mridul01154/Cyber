@@ -3,8 +3,10 @@ from tkinter import ttk, scrolledtext, messagebox
 import socket
 import json
 import ssl
+import threading
+import time
 
-SERVER_HOST = '192.168.0.113'
+SERVER_HOST = '192.168.1.103'
 SERVER_PORT = 9999
 
 class BlockchainClientApp:
@@ -13,6 +15,9 @@ class BlockchainClientApp:
         self.root.title("🌐 Blockchain Messenger")
         self.root.geometry("800x560")
         self.is_dark_mode = False
+        self.lock = threading.Lock()
+        self.listener_socket = None
+        self.start_auto_refresh()
 
         self.setup_styles()
         self.build_gui()
@@ -138,6 +143,28 @@ class BlockchainClientApp:
     def set_status(self, message, is_error=False):
         self.status_var.set(message)
         self.status_label.configure(foreground="red" if is_error else "green")
+
+    def start_auto_refresh(self):
+        threading.Thread(target=self.listen_for_updates, daemon=True).start()
+
+    def listen_for_updates(self):
+        while True:
+            try:
+                context = ssl.create_default_context(cafile="cert.pem")
+                context.check_hostname = False
+                context.verify_mode = ssl.CERT_REQUIRED
+                with socket.create_connection((SERVER_HOST, SERVER_PORT), timeout=5) as sock:
+                    with context.wrap_socket(sock, server_hostname=SERVER_HOST) as s:
+                        with self.lock:
+                            self.listener_socket = s
+                        while True:
+                            response = s.recv(8192).decode()
+                            if response:
+                                chain = json.loads(response)
+                                self.root.after(0, lambda: self.display_chain(chain))
+            except Exception as e:
+                self.root.after(0, lambda: self.set_status(f"Auto-update error: {e}", is_error=True))
+                time.sleep(5)
 
 
     def send_message(self):
