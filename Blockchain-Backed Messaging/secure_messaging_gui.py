@@ -6,7 +6,7 @@ import ssl
 import threading
 import time
 
-SERVER_HOST = '192.168.1.103'
+SERVER_HOST = 'ip address'
 SERVER_PORT = 9999
 
 class BlockchainClientApp:
