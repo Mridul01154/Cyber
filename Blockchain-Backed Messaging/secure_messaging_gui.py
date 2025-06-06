@@ -4,7 +4,7 @@ import socket
 import json
 import ssl
 
-SERVER_HOST = 'ip address'
+SERVER_HOST = '192.168.0.113'
 SERVER_PORT = 9999
 
 class BlockchainClientApp:
@@ -21,22 +21,46 @@ class BlockchainClientApp:
     def setup_styles(self):
         self.style = ttk.Style()
         self.style.theme_use("clam")
-        self.style.configure("TLabel", font=("Segoe UI", 11))
-        self.style.configure("TEntry", padding=5)
-        self.style.configure("TButton", font=("Segoe UI", 11), padding=5)
+
+        self.style.configure("Light.TLabel", background="#f4f4f4", foreground="#000000", font=("Segoe UI", 11))
+        self.style.configure("Light.TEntry", fieldbackground="#ffffff", foreground="#000000")
+        self.style.configure("Light.TButton", font=("Segoe UI", 11), padding=5)
+
+        self.style.configure("Dark.TLabel", background="#121212", foreground="#ffffff", font=("Segoe UI", 11))
+        self.style.configure("Dark.TEntry", fieldbackground="#1e1e1e", foreground="#ffffff")
+        self.style.configure("Dark.TButton", font=("Segoe UI", 11), padding=5)
 
     def set_theme(self, mode):
-        bg = "#121212" if mode == "dark" else "#f4f4f4"
-        fg = "#ffffff" if mode == "dark" else "#000000"
-        text_bg = "#1e1e1e" if mode == "dark" else "#ffffff"
+        if mode == "dark":
+            bg = "#121212"
+            fg = "#ffffff"
+            text_bg = "#1e1e1e"
+            label_style = "Dark.TLabel"
+            entry_style = "Dark.TEntry"
+            button_style = "Dark.TButton"
+            self.tls_status.configure(background="#121212")
+            self.block_count_label.configure(background="#121212",foreground="#ffffff")
+        else:
+            bg = "#f4f4f4"
+            fg = "#000000"
+            text_bg = "#ffffff"
+            label_style = "Light.TLabel"
+            entry_style = "Light.TEntry"
+            button_style = "Light.TButton"
+            self.tls_status.configure(background="#ffffff")
+            self.block_count_label.configure(background="#ffffff",foreground="#121212")
 
         self.root.configure(bg=bg)
         self.input_frame.configure(bg=bg)
-        self.title_label.configure(background=bg, foreground=fg)
+        self.title_label.configure(style=label_style)
 
         for widget in self.input_frame.winfo_children():
-            if isinstance(widget, (ttk.Label, ttk.Entry)):
-                widget.configure(style="TLabel")
+            if isinstance(widget, ttk.Label):
+                widget.configure(style=label_style)
+            elif isinstance(widget, ttk.Entry):
+                widget.configure(style=entry_style)
+            elif isinstance(widget, ttk.Button):
+                widget.configure(style=button_style)
 
         self.output.configure(bg=text_bg, fg=fg, insertbackground=fg)
 
@@ -56,13 +80,29 @@ class BlockchainClientApp:
                     response = s.recv(8192).decode()
                     chain = json.loads(response)
                     self.display_chain(chain)
+                    self.tls_status.configure(text="🔒 TLS: Connected", fg="green")
+                    self.set_status("Chain refreshed successfully.", is_error=False)
+
         except Exception as e:
-            messagebox.showerror("Connection Error", f"Could not refresh chain:\n{e}")
+            self.tls_status.configure(text="🔒 TLS: Disconnected", fg="red")
+            self.set_status(f"Refresh failed: {e}", is_error=True)
+            messagebox.showwarning("Connection Error", "Server Down.")
+
+    def set_status(self, message, level="info"):
+        color = {"info": "blue", "success": "green", "error": "red", "warning": "orange"}.get(level, "black")
+        self.status_var.set(message)
+        self.status_label.configure(foreground=color)
 
 
     def build_gui(self):
         self.title_label = ttk.Label(self.root, text="Blockchain Messenger", font=("Segoe UI", 18, "bold"))
         self.title_label.pack(pady=10)
+
+        self.tls_status = tk.Label(self.root, text="🔒 TLS: Disconnected", fg="red", font=("Segoe UI", 10, "bold"))
+        self.tls_status.pack()
+
+        self.block_count_label = ttk.Label(self.root, text="📦 Total Blocks: 0", font=("Segoe UI", 10))
+        self.block_count_label.pack()
 
         self.input_frame = tk.Frame(self.root)
         self.input_frame.pack(pady=10)
@@ -76,7 +116,7 @@ class BlockchainClientApp:
         self.message_entry.grid(row=1, column=1, padx=5, pady=5)
         self.message_entry.bind("<Return>", lambda event: self.send_message())
 
-        self.send_button = ttk.Button(self.input_frame, text="🚀 Send Message", command=self.send_message)
+        self.send_button = ttk.Button(self.input_frame, text="🚀 Send Message", command=self.send_message, )
         self.send_button.grid(row=2, column=1, pady=10)
 
         self.theme_button = ttk.Button(self.input_frame, text="🌓 Toggle Dark Mode", command=self.toggle_theme)
@@ -87,6 +127,18 @@ class BlockchainClientApp:
 
         self.output = scrolledtext.ScrolledText(self.root, width=95, height=20, font=("Consolas", 10), borderwidth=1, relief="solid")
         self.output.pack(padx=10, pady=10)
+
+        self.status_var = tk.StringVar()
+        self.status_label = ttk.Label(self.root, textvariable=self.status_var, anchor="w", foreground="red")
+        self.status_label.pack(fill="x", padx=10, pady=(0, 5))
+
+        self.status_label = ttk.Label(self.root, text="Welcome.", font=("Segoe UI", 10, "italic"))
+        self.status_label.pack(pady=5)
+
+    def set_status(self, message, is_error=False):
+        self.status_var.set(message)
+        self.status_label.configure(foreground="red" if is_error else "green")
+
 
     def send_message(self):
         sender = self.sender_entry.get().strip()
@@ -107,18 +159,22 @@ class BlockchainClientApp:
                     response = s.recv(8192).decode()
                     chain = json.loads(response)
                     self.display_chain(chain)
+                    self.tls_status.configure(text="🔒 TLS: Connected", fg="green")
+                    self.set_status("Connected securely.", is_error=False)
         except FileNotFoundError:
             messagebox.showerror("Certificate Error", "Trusted certificate (cert.pem) not found.")
         except Exception as e:
-            messagebox.showerror("Connection Error", f"Could not reach server:\n{e}")
+            self.tls_status.configure(text="🔒 TLS: Disconnected", fg="red")
+            self.set_status(f"Connection failed: {e}", is_error=True)
+            messagebox.showwarning("Connection Error", "Server Down.")
 
-        self.sender_entry.delete(0, tk.END)
         self.message_entry.delete(0, tk.END)
+        self.message_entry.focus_set()
 
-
-    def display_chain(self, chain):
+    def display_chain (self, chain):
+        self.block_count_label.configure(text=f"📦 Total Blocks: {len(chain)}")
         self.output.delete(1.0, tk.END)
-        for block in chain:
+        for block in reversed(chain):
             initials = block['sender'][0].upper() if block['sender'] else "?"
             self.output.insert(tk.END, f"\n👤 [{initials}] {block['sender']}  📅 {block['timestamp']}\n", "bold")
             self.output.insert(tk.END, f"💬 {block['message']}\n", "msg")
@@ -129,4 +185,4 @@ class BlockchainClientApp:
 if __name__ == "__main__":
     root = tk.Tk()
     app = BlockchainClientApp(root)
-    root.mainloop()
+    root.mainloop() 
