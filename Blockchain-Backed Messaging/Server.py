@@ -4,6 +4,11 @@ import hashlib
 import datetime
 import json
 import ssl
+import time
+
+connected_clients = []
+clients_lock = threading.Lock()
+
 
 class Blockchain:
     def __init__(self):
@@ -40,22 +45,56 @@ class Blockchain:
         return self.chain
 
 blockchain = Blockchain()
+last_chain_hash = None
+
+def get_chain_hash(chain):
+    return hashlib.sha256(json.dumps(chain, sort_keys=True).encode()).hexdigest()
+
+def broadcast_chain_periodically():
+    global last_chain_hash
+    while True:
+        time.sleep(15)
+        current_chain = blockchain.get_chain()
+        current_hash = get_chain_hash(current_chain)
+
+        last_chain_hash = current_hash
+        chain_data = json.dumps(current_chain)
+        with clients_lock:
+            for conn in connected_clients[:]:
+                try:
+                    conn.send(chain_data.encode())
+                except Exception as e:
+                    print("[!] Failed to send to client, removing:", e)
+                    connected_clients.remove(conn)
 
 def handle_client(conn, addr):
     try:
         print(f"[+] Connected by {addr}")
-        data = conn.recv(1024).decode()
-        msg = json.loads(data)
-        if msg.get("type") == "refresh":
-            print(f"[↻] Refresh request from {addr}")
-        else:
-            print(f"[+] Received message from {msg['sender']}: {msg['message']}")
-            blockchain.add_block(msg['sender'], msg['message'])
-        response = json.dumps(blockchain.get_chain())
-        conn.send(response.encode())
+        with clients_lock:
+            connected_clients.append(conn)
+
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            msg = json.loads(data.decode())
+            if msg.get("type") == "refresh":
+                print(f"[↻] Refresh request from {addr}")
+            else:
+                print(f"[+] Received message from {msg['sender']}: {msg['message']}")
+                blockchain.add_block(msg['sender'], msg['message'])
+                global last_chain_hash
+                last_chain_hash = None
+
+            response = json.dumps(blockchain.get_chain())
+            conn.send(response.encode())
+
     except Exception as e:
         print("[!] Error handling client:", e)
     finally:
+        with clients_lock:
+            if conn in connected_clients:
+                connected_clients.remove(conn)
         conn.close()
         print(f"[-] Connection with {addr} closed")
 
@@ -69,6 +108,7 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 server.listen()
 print(f"[+] TLS Server started on port {PORT}")
+threading.Thread(target=broadcast_chain_periodically, daemon=True).start()
 
 
 while True:
@@ -81,5 +121,4 @@ while True:
             client_socket.close()
         except Exception as e:
             print("[!] General server error:", e)
-
 
