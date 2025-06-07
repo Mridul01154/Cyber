@@ -69,6 +69,7 @@ python secure_messaging_gui.py
 
 ## 💡 Features Overview
 
+- 🔐 **True end-to-end encryption where the server cannot decrypt messages**
 - 🔒 **TLS-Secured Socket Communication**
 - 🧱 **Blockchain with Previous Hash & Integrity**
 - 🪟 **Modern Tkinter UI with Dark Mode Toggle**
@@ -94,6 +95,7 @@ Blockchain-Backed Messaging/
 
 ## 📈 Future Improvements
 
+- 🔑 Implement asymmetric key exchange for secure key distribution
 - 🌍 Optional online deployment with Flask/Render
 - 📂 Persist blockchain data to disk
 - 👥 Add user authentication
