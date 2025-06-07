@@ -9,11 +9,27 @@ import time
 connected_clients = []
 clients_lock = threading.Lock()
 
-
 class Blockchain:
     def __init__(self):
         self.chain = []
         self.create_genesis_block()
+
+    def validate_chain(self):
+        for i in range(1, len(self.chain)):
+            current = self.chain[i]
+            previous = self.chain[i - 1]
+
+            if current['previous_hash'] != previous['hash']:
+                print(f"[!] Invalid chain at block {i}: hash mismatch.")
+                return False
+
+            recalculated_hash = self.calculate_hash(current)
+            if current['hash'] != recalculated_hash:
+                print(f"[!] Invalid chain at block {i}: hash recalculation mismatch.")
+                return False
+
+        print("[✔] Blockchain validated successfully.")
+        return True
 
     def create_genesis_block(self):
         genesis = self.create_block("System", "Genesis Block", "0")
@@ -77,20 +93,30 @@ def handle_client(conn, addr):
             data = conn.recv(1024)
             if not data:
                 break
+
             msg = json.loads(data.decode())
+
             if msg.get("type") == "refresh":
                 print(f"[↻] Refresh request from {addr}")
             else:
                 print(f"[+] Received message from {msg['sender']}: {msg['message']}")
-                blockchain.add_block(msg['sender'], msg['message'])
-                global last_chain_hash
-                last_chain_hash = None
+
+               
+                if blockchain.validate_chain():
+                    blockchain.add_block(msg['sender'], msg['message'])
+                    global last_chain_hash
+                    last_chain_hash = None
+                else:
+                    error_msg = json.dumps({"error": "Chain validation failed"})
+                    conn.send(error_msg.encode())
+                    continue  
 
             response = json.dumps(blockchain.get_chain())
             conn.send(response.encode())
 
     except Exception as e:
         print("[!] Error handling client:", e)
+
     finally:
         with clients_lock:
             if conn in connected_clients:
@@ -98,10 +124,12 @@ def handle_client(conn, addr):
         conn.close()
         print(f"[-] Connection with {addr} closed")
 
+
 HOST = '0.0.0.0'
 PORT = 9999
 
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+context.minimum_version = ssl.TLSVersion.TLSv1_3
 context.load_cert_chain(certfile="cert.pem", keyfile="key.pem")
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
