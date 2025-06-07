@@ -6,7 +6,6 @@ import ssl
 import threading
 import time
 from cryptography.fernet import Fernet
-import base64
 
 SERVER_HOST = '192.168.1.103'
 SERVER_PORT = 9999
