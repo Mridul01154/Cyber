@@ -5,9 +5,14 @@ import json
 import ssl
 import threading
 import time
+from cryptography.fernet import Fernet
+import base64
 
-SERVER_HOST = 'ip address'
+SERVER_HOST = '192.168.1.103'
 SERVER_PORT = 9999
+
+SHARED_KEY = b'MyY0K7Ei8KZ2OJYy2AtbYe_QyKlOkJ6NmdB1zqJvraQ='
+cipher = Fernet(SHARED_KEY)
 
 class BlockchainClientApp:
     def __init__(self, root):
@@ -93,12 +98,6 @@ class BlockchainClientApp:
             self.set_status(f"Refresh failed: {e}", is_error=True)
             messagebox.showwarning("Connection Error", "Server Down.")
 
-    def set_status(self, message, level="info"):
-        color = {"info": "blue", "success": "green", "error": "red", "warning": "orange"}.get(level, "black")
-        self.status_var.set(message)
-        self.status_label.configure(foreground=color)
-
-
     def build_gui(self):
         self.title_label = ttk.Label(self.root, text="Blockchain Messenger", font=("Segoe UI", 18, "bold"))
         self.title_label.pack(pady=10)
@@ -153,18 +152,30 @@ class BlockchainClientApp:
                 context = ssl.create_default_context(cafile="cert.pem")
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_REQUIRED
+
                 with socket.create_connection((SERVER_HOST, SERVER_PORT), timeout=5) as sock:
+                    sock.settimeout(60) 
                     with context.wrap_socket(sock, server_hostname=SERVER_HOST) as s:
                         with self.lock:
                             self.listener_socket = s
+
                         while True:
-                            response = s.recv(8192).decode()
-                            if response:
-                                chain = json.loads(response)
-                                self.root.after(0, lambda: self.display_chain(chain))
+                            try:
+                                response = s.recv(8192).decode()
+                                if response:
+                                    chain = json.loads(response)
+                                    self.root.after(0, lambda c=chain: self.display_chain(c))
+                            except socket.timeout:
+                                self.root.after(0, lambda: self.set_status("Auto-update timed out. Retrying...", is_error=True))
+                                break
+                            except Exception as recv_err:
+                                self.root.after(0, lambda: self.set_status(f"Auto-update error: {recv_err}", is_error=True))
+                                break
+
             except Exception as e:
-                self.root.after(0, lambda: self.set_status(f"Auto-update error: {e}", is_error=True))
+                self.root.after(0, lambda: self.set_status(f"Connection error: {e}", is_error=True))
                 time.sleep(5)
+
 
 
     def send_message(self):
@@ -181,7 +192,8 @@ class BlockchainClientApp:
             context.verify_mode = ssl.CERT_REQUIRED
             with socket.create_connection((SERVER_HOST, SERVER_PORT)) as sock:
                 with context.wrap_socket(sock, server_hostname=SERVER_HOST) as s:
-                    data = json.dumps({'sender': sender, 'message': message})
+                    encrypted = cipher.encrypt(message.encode()).decode()
+                    data = json.dumps({'sender': sender, 'message': encrypted})
                     s.send(data.encode())
                     response = s.recv(8192).decode()
                     chain = json.loads(response)
@@ -204,7 +216,11 @@ class BlockchainClientApp:
         for block in reversed(chain):
             initials = block['sender'][0].upper() if block['sender'] else "?"
             self.output.insert(tk.END, f"\n👤 [{initials}] {block['sender']}  📅 {block['timestamp']}\n", "bold")
-            self.output.insert(tk.END, f"💬 {block['message']}\n", "msg")
+            try:
+                decrypted = cipher.decrypt(block['message'].encode()).decode()
+            except Exception:
+                decrypted = "[Unable to decrypt]"
+            self.output.insert(tk.END, f"💬 {decrypted}\n", "msg")
             self.output.insert(tk.END, f"🔁 Prev Hash: {block['previous_hash']}\n")
             self.output.insert(tk.END, f"🔒 Hash: {block['hash']}\n")
             self.output.insert(tk.END, "—" * 80 + "\n")
