@@ -75,6 +75,7 @@ python secure_messaging_gui.py
 - 🪟 **Modern Tkinter UI with Dark Mode Toggle**
 - 🔄 **Chain Refresh & Display**
 - 🧵 **Handles Multiple Clients via Threads**
+- 🔄 **Automatic message updates without freezing the UI**
 
 ---
 
@@ -99,7 +100,6 @@ Blockchain-Backed Messaging/
 - 🌍 Optional online deployment with Flask/Render
 - 📂 Persist blockchain data to disk
 - 👥 Add user authentication
-- 🔗 Broadcast updates to all connected clients
 - 🌐 Web-based client interface
 
 ---
