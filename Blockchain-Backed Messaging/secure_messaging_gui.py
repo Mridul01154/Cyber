@@ -164,6 +164,7 @@ class BlockchainClientApp:
                                 if response:
                                     chain = json.loads(response)
                                     self.root.after(0, lambda c=chain: self.display_chain(c))
+                                    self.tls_status.configure(text="🔒 TLS: Connected", fg="green")
                             except socket.timeout:
                                 self.root.after(0, lambda: self.set_status("Auto-update timed out. Retrying...", is_error=True))
                                 break
