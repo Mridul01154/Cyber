@@ -65,7 +65,7 @@ You can install the required package manually via:
 - Biometric login or OTP-based 2FA
 
 ### 📸 Screenshots
-<img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
+<img src="[path_or_url_to_image.png](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/Docs/Screenshot%202025-06-10%20100840.png)" alt="Screenshot" width="600" height="400"/>
 <img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
 <img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
 
