@@ -2,7 +2,7 @@
 
 A secure desktop application for safely encrypting, decrypting, and managing sensitive files. Built with Python, featuring password-based access, strong encryption, secure deletion, and an intuitive GUI.
 
-![App Screenshot]([screenshot.png](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/Docs/Screenshot%202025-06-10%20101059.png))
+![App Screenshot](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/Docs/Screenshot%202025-06-10%20101059.png)
 
 ## 🚀 Features
 - **Master Password Protection** – Set and verify strong passwords using PBKDF2 + salt
