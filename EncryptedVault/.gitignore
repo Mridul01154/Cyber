@@ -1,0 +1,13 @@
+# Configuration file containing password hash and salts
+config.json
+
+# Vault directory with encrypted files
+vault_files/
+
+# Temporary vault directory used during password reset
+temp_vault/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
