@@ -42,16 +42,16 @@ You can install the required package manually via:
 
 ### 📁 Project Structure
 
-EncryptedVault/
-├── main.py              # Entry point - login/setup GUI
-├── vault.py             # Main vault window
-├── auth.py              # Password handling (save/verify)
-├── encryption.py        # File encryption/decryption
-├── file_utils.py        # Password reset, strength check
-├── vault_files/         # Encrypted files storage
-├── config.json          # Stores hashed password & salts
-├── requirements.txt     # Required packages
-└── README.md
+- EncryptedVault/
+- ├── main.py              # Entry point - login/setup GUI
+- ├── vault.py             # Main vault window
+- ├── auth.py              # Password handling (save/verify)
+- ├── encryption.py        # File encryption/decryption
+- ├── file_utils.py        # Password reset, strength check
+- ├── vault_files/         # Encrypted files storage
+- ├── config.json          # Stores hashed password & salts
+- ├── requirements.txt     # Required packages
+- └── README.md
 
 ### 🔐 Security Notes
 - Master password is stored as a derived key using PBKDF2 with SHA-256 and a unique salt.
