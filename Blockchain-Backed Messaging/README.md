@@ -114,7 +114,7 @@ Blockchain-Backed Messaging/
 
 ## 📜 License
 
-This project is licensed under the MIT License — feel free to fork, modify, and share!
+This project is licensed under the [MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE) — feel free to fork, modify, and share!
 
 ---
 
