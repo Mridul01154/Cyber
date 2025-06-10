@@ -72,4 +72,4 @@ This project is licensed under the [MIT License](https://github.com/Mridul01154/
 
 ### 🙋 Author
 - Mridul Gharami
-- GitHub: @Mridul01154
+- GitHub: [@Mridul01154](https://github.com/Mridul01154)
