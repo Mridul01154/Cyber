@@ -49,6 +49,7 @@ You can install the required package manually via:
 - ├── encryption.py        # File encryption/decryption
 - ├── file_utils.py        # Password reset, strength check
 - ├── vault_files/         # Encrypted files storage
+- ├── Docs/                # Screenshot stroage
 - ├── config.json          # Stores hashed password & salts
 - ├── requirements.txt     # Required packages
 - └── README.md
