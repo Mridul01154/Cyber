@@ -65,7 +65,9 @@ You can install the required package manually via:
 - Biometric login or OTP-based 2FA
 
 ### 📸 Screenshots
-You can add GUI screenshots here to showcase the interface.
+<img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
+<img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
+<img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
 
 ### 📝 License
 This project is licensed under the [MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE).
