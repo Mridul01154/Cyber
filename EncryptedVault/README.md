@@ -67,7 +67,7 @@ You can install the required package manually via:
 ### 📸 Screenshots
 <img src="https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/Docs/Screenshot%202025-06-10%20100840.png" alt="Screenshot" width="600" height="400"/>
 <img src="https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/Docs/Screenshot%202025-06-10%20100911.png" alt="Screenshot" width="600" height="400"/>
-<img src="path_or_url_to_image.png" alt="Screenshot" width="600" height="400"/>
+<img src="https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/Docs/Screenshot%202025-06-10%20100937.png" alt="Screenshot" width="600" height="400"/>
 
 ### 📝 License
 This project is licensed under the [MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE).
