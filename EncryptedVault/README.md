@@ -68,7 +68,7 @@ You can install the required package manually via:
 You can add GUI screenshots here to showcase the interface.
 
 ### 📝 License
-This project is licensed under the MIT License(https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE).
+This project is licensed under the [MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE).
 
 ### 🙋 Author
 - Mridul Gharami
