@@ -16,10 +16,10 @@ A secure desktop application for safely encrypting, decrypting, and managing sen
 
 ### 1. Clone the Repository
 
-git clone https://github.com/Mridul01154/EncryptedVault.git
-cd EncryptedVault
-pip install -r requirements.txt
-python main.py
+- git clone https://github.com/Mridul01154/EncryptedVault.git
+- cd EncryptedVault
+- pip install -r requirements.txt
+- python main.py
 
 ### 2. Install Requirements
 
