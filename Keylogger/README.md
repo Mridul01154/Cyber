@@ -25,5 +25,4 @@ This is a simple Windows-based keylogger written in C that:
 3. **Key Logging**: A new thread is created to capture keystrokes using `GetAsyncKeyState`.
 4. **Log Format**: Each keystroke is logged with a timestamp and saved to `system.log`.
 
-## File Structure
 
