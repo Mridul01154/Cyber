@@ -110,7 +110,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  # Example SHA-
 
 - 📜 **License**
   - This project is licensed under the MIT License.
-  - 🔗 View License
+  - [🔗 View License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE)
  
 - 🙋 **Author**
   - Mridul Gharami
