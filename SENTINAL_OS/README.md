@@ -37,10 +37,10 @@ This project is a lightweight Windows-based Intrusion Detection System (IDS) and
 ## File Structure
 
 - ├──src/
-- ├── detection.c # Detection logic (blacklists, floods, port scans)
-- ├── logger.c # Thread-safe logger
-- ├── proc_monitor.c # Blacklist process and hash detection
-- ├── sniffer.c # Entry point, sniffer, dispatcher
+- | |── detection.c # Detection logic (blacklists, floods, port scans)
+- | |── logger.c # Thread-safe logger
+- | |── proc_monitor.c # Blacklist process and hash detection
+- | └── sniffer.c # Entry point, sniffer, dispatcher
 - ├── config/
 - │ ├── rules.config # Contains IP, Port blacklists and thresholds
 - │ ├── proc_rules.config # List of blacklisted process names
