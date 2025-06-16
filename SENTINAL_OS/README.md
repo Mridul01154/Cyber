@@ -73,43 +73,14 @@ This project is a lightweight Windows-based Intrusion Detection System (IDS) and
    - Run the executable with administrative rights
    - Select the interface number as prompted
 
-## Example `rules.config`
-
+### 📄 `rules.config`
 ```ini
-BLACKLIST_IP=192.168.1.100
-BLACKLIST_PORT=4444
-SYN_FLOOD_THRESHOLD=500
-SYN_FLOOD_WINDOW=10
-PORT_SCAN_THRESHOLD=10
-PORT_SCAN_WINDOW=60
-UDP_FLOOD_THRESHOLD=500
-UDP_FLOOD_WINDOW=10
-ALERT_ON_ARP=1
-Example proc_rules.config
-```ini
-
-BLACKLIST_PROC=malicious.exe
-BLACKLIST_PROC=stealer.exe
-Example bad_hashes.txt
-...
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-...
-Future Improvements
-Add GUI support for live monitoring
-
-Export logs in JSON or CSV format
-
-Auto-updating threat rules via remote API
-
-Cross-platform support (Linux)
-
-License
-[MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE)
-
-### 🙋 Author
-- Mridul Gharami
-- GitHub: [@Mridul01154](https://github.com/Mridul01154)
-
----
-
-Let me know if you'd like a tailored badge set (for GitHub Actions, License, etc.) or a cleaner markdown version for paste-and-use.
+BLACKLIST_IP=192.168.1.100           # Block traffic from this IP address
+BLACKLIST_PORT=4444                  # Block access to this port
+SYN_FLOOD_THRESHOLD=500              # Trigger alert after 500 SYN packets
+SYN_FLOOD_WINDOW=10                  # Time window (in seconds) for SYN flood detection
+PORT_SCAN_THRESHOLD=10               # Number of unique ports accessed to trigger scan alert
+PORT_SCAN_WINDOW=60                  # Time window (in seconds) for port scan detection
+UDP_FLOOD_THRESHOLD=500              # Trigger alert after 500 UDP packets
+UDP_FLOOD_WINDOW=10                  # Time window (in seconds) for UDP flood detection
+ALERT_ON_ARP=1                       # Enable ARP packet logging
