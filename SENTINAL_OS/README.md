@@ -35,8 +35,7 @@ This project is a lightweight Windows-based Intrusion Detection System (IDS) and
 - Admin privileges (required for raw packet capture and process access)
 
 ## File Structure
-
-.
+.src/
 ├── detection.c # Detection logic (blacklists, floods, port scans)
 ├── logger.c # Thread-safe logger
 ├── proc_monitor.c # Blacklist process and hash detection
@@ -107,8 +106,9 @@ Cross-platform support (Linux)
 License
 [MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE)
 
-Author: Mridul Gharami
-Feel free to contribute or raise issues!
+### 🙋 Author
+- Mridul Gharami
+- GitHub: [@Mridul01154](https://github.com/Mridul01154)
 
 ---
 
