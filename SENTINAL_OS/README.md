@@ -87,7 +87,7 @@ UDP_FLOOD_THRESHOLD=500
 UDP_FLOOD_WINDOW=10
 ALERT_ON_ARP=1
 Example proc_rules.config
-ini
+```ini
 
 BLACKLIST_PROC=malicious.exe
 BLACKLIST_PROC=stealer.exe
@@ -105,14 +105,10 @@ Auto-updating threat rules via remote API
 Cross-platform support (Linux)
 
 License
-MIT License
+[MIT License](https://github.com/Mridul01154/Cyber/blob/main/EncryptedVault/LICENSE)
 
 Author: Mridul Gharami
 Feel free to contribute or raise issues!
-
-yaml
-Copy
-Edit
 
 ---
 
