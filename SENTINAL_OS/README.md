@@ -88,3 +88,30 @@ PORT_SCAN_WINDOW=60                  # Time window (in seconds) for port scan de
 UDP_FLOOD_THRESHOLD=500              # Trigger alert after 500 UDP packets
 UDP_FLOOD_WINDOW=10                  # Time window (in seconds) for UDP flood detection
 ALERT_ON_ARP=1                       # Enable ARP packet logging
+```
+
+### 📄 proc_rules.config
+```ini
+BLACKLIST_IP=192.168.1.100
+BLACKLIST_PORT=4444
+ALERT_ON_ARP=1
+```
+
+### 📄 bad_hashes.txt
+```ini
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  # Example SHA-256 of a malicious binary
+```
+
+- 🚧 **Future Improvements**
+  - 🖥️ GUI Support: Add a graphical interface for real-time monitoring and log viewing
+  - 📤 Export Logs: Support JSON or CSV log export for integration with SIEM tools
+  - 🔄 Rule Auto-Update: Pull blacklist and threat intel updates from a remote source or server
+  - 🐧 Cross-Platform Support: Make compatible with Linux (using libpcap, POSIX APIs)
+
+- 📜 **License**
+  - This project is licensed under the MIT License.
+  - 🔗 View License
+ 
+- 🙋 **Author**
+  - Mridul Gharami
+  - GitHub: @Mridul01154
